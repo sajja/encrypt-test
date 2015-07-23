@@ -34,7 +34,7 @@ public class EncryptService {
      * @param hexIV
      * @throws Exception
      */
-    public void encrypt(String plainText, EncryptionAlgo algo, String hexKey, String hexIV, boolean padding, boolean salt) throws Exception {
+    public String encrypt(String plainText, EncryptionAlgo algo, String hexKey, String hexIV, boolean padding, boolean salt) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
         byte[] key = DatatypeConverter.parseHexBinary(hexKey);
@@ -51,14 +51,15 @@ public class EncryptService {
         System.out.println("Encrypted hex dump = " + encryptedHexDump);
         System.out.println("");
         System.out.println("Encrypted base64 = " + encryptedBase64);
+        return encryptedBase64;
     }
 
 
-    public void encrypt(String plainText,EncryptionAlgo algo, String hexKey, String hexIV) throws Exception {
-        encrypt(plainText, algo, hexKey, hexIV, false, false);
+    public String encrypt(String plainText, EncryptionAlgo algo, String hexKey, String hexIV) throws Exception {
+        return encrypt(plainText, algo, hexKey, hexIV, false, false);
     }
 
-    public static String decrypt(String encryptedData, EncryptionAlgo algo, String hexKey, String hexIV) throws Exception {
+    public  String decrypt(String encryptedData, EncryptionAlgo algo, String hexKey, String hexIV) throws Exception {
         byte[] encryptedBytes = DatatypeConverter.parseBase64Binary(encryptedData);
         byte[] key = DatatypeConverter.parseHexBinary(hexKey);
         SecretKeySpec keySpec = new SecretKeySpec(key, algo.getType());
@@ -67,10 +68,5 @@ public class EncryptService {
         c.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
         byte[] decodedValue = c.doFinal(encryptedBytes);
         return  new String(decodedValue);
-    }
-
-    public static void main(String[] args) throws Exception {
-        new EncryptService().encrypt("test\n", EncryptionAlgo.AES_CBC_PKCS5, "D41D8CD98F00B2040000000000000000", "03B13BBE886F00E00000000000000000");
-        new EncryptService().decrypt("H2714PO496UWMLApd6vl2Q==", EncryptionAlgo.AES_CBC_PKCS5, "D41D8CD98F00B2040000000000000000", "03B13BBE886F00E00000000000000000");
     }
 }
