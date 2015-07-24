@@ -35,7 +35,7 @@ public class EncryptService {
      * @throws Exception
      */
     public String encrypt(String plainText, EncryptionAlgo algo, String hexKey, String hexIV, boolean padding, boolean salt) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance(algo.getValue());
 
         byte[] key = DatatypeConverter.parseHexBinary(hexKey);
 
