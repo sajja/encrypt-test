@@ -9,10 +9,10 @@ import java.io.InputStream;
 
 public class EncryptTest extends TestCase {
     String plainText = "Big bad wold is comming to get red riding hood";
-    String cipherText = "ekUp8DIdwYtsw8Or8acSLJkXivqXXDjhqaPZ8JbiC1WVSejlvugA7Mj+RBZtTQQS";
+    String cipherText = "b4aU5r0fUycEAcCJxo1uPXsTtE8H9WRvKhV+5SvZjLP1UMawoWFfQx1PQ7kMTL3A";
 
-    String hexKey = "D41D8CD98F00B2040000000000000000";
-    String hexIV = "03B13BBE886F00E00000000000000000";
+    String hexKey ="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+    String hexIV = "dddddddddddddddddddddddddddddddd";
     EncryptService encryptService = new EncryptService();
 
     public void testEncrypt() throws Exception {
