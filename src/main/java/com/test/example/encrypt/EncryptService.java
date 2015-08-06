@@ -6,15 +6,18 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 enum EncryptionAlgo {
-    AES_CBC_NOPADDING("AES", "AES/CBC/NoPadding"),
-    AES_CBC_PKCS5("AES", "AES/CBC/PKCS5Padding");
+    AES_CBC_NOPADDING("AES", "AES/CBC/NoPadding", 0),
+    AES_256_CBC_PKCS5("AES", "AES/CBC/PKCS5Padding", 256),
+    AES_128_CBC_PKCS5("AES", "AES/CBC/PKCS5Padding", 128);
 
     private final String type;
     private String value;
+    private int bits;
 
-    EncryptionAlgo(String type, String value) {
+    EncryptionAlgo(String type, String value, int bits) {
         this.value = value;
         this.type = type;
+        this.bits = bits;
     }
 
     public String getType() {
@@ -23,6 +26,10 @@ enum EncryptionAlgo {
 
     public String getValue() {
         return value;
+    }
+
+    public int getBits() {
+        return bits;
     }
 }
 
@@ -39,7 +46,7 @@ public class EncryptService {
 
         byte[] key = DatatypeConverter.parseHexBinary(hexKey);
 
-        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        SecretKeySpec keySpec = new SecretKeySpec(key, 0, algo.getBits() / 8, "AES");
         IvParameterSpec ivSpec = new IvParameterSpec(DatatypeConverter.parseHexBinary(hexIV));
 
         cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
@@ -59,7 +66,7 @@ public class EncryptService {
         return encrypt(plainText, algo, hexKey, hexIV, false, false);
     }
 
-    public  String decrypt(String encryptedData, EncryptionAlgo algo, String hexKey, String hexIV) throws Exception {
+    public String decrypt(String encryptedData, EncryptionAlgo algo, String hexKey, String hexIV) throws Exception {
         byte[] encryptedBytes = DatatypeConverter.parseBase64Binary(encryptedData);
         byte[] key = DatatypeConverter.parseHexBinary(hexKey);
         SecretKeySpec keySpec = new SecretKeySpec(key, algo.getType());
@@ -67,6 +74,6 @@ public class EncryptService {
         IvParameterSpec ivSpec = new IvParameterSpec(DatatypeConverter.parseHexBinary(hexIV));
         c.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
         byte[] decodedValue = c.doFinal(encryptedBytes);
-        return  new String(decodedValue);
+        return new String(decodedValue);
     }
 }
